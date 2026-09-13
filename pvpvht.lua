@@ -63,11 +63,12 @@ local Config = {
 
     ShowFOV = false,
 }
--- ========== 4. GUI ==========
+
+-- ========== 4. GUI (MENU TABS) ==========
 local function CreateToggle(parent, name, y, callback)
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(0.9, 0, 0, 32)
-    Btn.Position = UDim2.new(0.05, 0, 0, y)
+    Btn.Size = UDim2.new(0.95, 0, 0, 30)
+    Btn.Position = UDim2.new(0.025, 0, 0, y)
     Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
     Btn.BorderSizePixel = 0
     Btn.Text = name .. ": OFF"
@@ -76,7 +77,6 @@ local function CreateToggle(parent, name, y, callback)
     Btn.Font = Enum.Font.Gotham
     Btn.Parent = parent
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
-
     local state = false
     Btn.MouseButton1Click:Connect(function()
         state = not state
@@ -88,46 +88,42 @@ end
 
 local function CreateSlider(parent, name, y, min, max, default, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(0.9, 0, 0, 42)
-    Frame.Position = UDim2.new(0.05, 0, 0, y)
+    Frame.Size = UDim2.new(0.95, 0, 0, 40)
+    Frame.Position = UDim2.new(0.025, 0, 0, y)
     Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
     Frame.BorderSizePixel = 0
     Frame.Parent = parent
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
-
     local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(1, 0, 0, 20)
+    Label.Size = UDim2.new(1, 0, 0, 18)
     Label.BackgroundTransparency = 1
     Label.Text = name .. ": " .. default
     Label.TextColor3 = Color3.fromRGB(210, 210, 210)
     Label.TextSize = 11
     Label.Font = Enum.Font.Gotham
     Label.Parent = Frame
-
     local Bar = Instance.new("Frame")
     Bar.Size = UDim2.new(0.9, 0, 0, 5)
-    Bar.Position = UDim2.new(0.05, 0, 0, 26)
+    Bar.Position = UDim2.new(0.05, 0, 0, 25)
     Bar.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
     Bar.BorderSizePixel = 0
     Bar.Parent = Frame
     Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 3)
-
     local Fill = Instance.new("Frame")
     Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
     Fill.BackgroundColor3 = Color3.fromRGB(0, 160, 100)
     Fill.BorderSizePixel = 0
     Fill.Parent = Bar
     Instance.new("UICorner", Fill).CornerRadius = UDim.new(0, 3)
-
     local dragging = false
     Bar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = true end
     end)
     Bar.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end
     end)
     UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local rel = math.clamp((input.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
             Fill.Size = UDim2.new(rel, 0, 1, 0)
             local val = math.floor(min + (max - min) * rel)
@@ -139,13 +135,12 @@ end
 
 local function CreateInput(parent, name, y, default, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(0.9, 0, 0, 38)
-    Frame.Position = UDim2.new(0.05, 0, 0, y)
+    Frame.Size = UDim2.new(0.95, 0, 0, 36)
+    Frame.Position = UDim2.new(0.025, 0, 0, y)
     Frame.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
     Frame.BorderSizePixel = 0
     Frame.Parent = parent
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
-
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(0.45, 0, 1, 0)
     Label.Position = UDim2.new(0.05, 0, 0, 0)
@@ -156,9 +151,8 @@ local function CreateInput(parent, name, y, default, callback)
     Label.Font = Enum.Font.Gotham
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.Parent = Frame
-
     local Box = Instance.new("TextBox")
-    Box.Size = UDim2.new(0.45, 0, 0, 26)
+    Box.Size = UDim2.new(0.45, 0, 0, 24)
     Box.Position = UDim2.new(0.5, 0, 0, 6)
     Box.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
     Box.BorderSizePixel = 0
@@ -168,162 +162,183 @@ local function CreateInput(parent, name, y, default, callback)
     Box.Font = Enum.Font.Gotham
     Box.Parent = Frame
     Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 4)
-
     Box.FocusLost:Connect(function()
         local num = tonumber(Box.Text)
         if num then callback(num) else Box.Text = tostring(default) end
     end)
 end
 
--- GUI chính
-local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 340, 0, 620)
-Main.Position = UDim2.new(0, 20, 0, 60)
-Main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true
-Main.Parent = ScreenGui
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
+local function CreateButton(parent, name, y, callback)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(0.95, 0, 0, 30)
+    Btn.Position = UDim2.new(0.025, 0, 0, y)
+    Btn.BackgroundColor3 = Color3.fromRGB(55, 55, 80)
+    Btn.BorderSizePixel = 0
+    Btn.Text = name
+    Btn.TextColor3 = Color3.fromRGB(210, 210, 210)
+    Btn.TextSize = 12
+    Btn.Font = Enum.Font.Gotham
+    Btn.Parent = parent
+    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
+    Btn.MouseButton1Click:Connect(function() callback(Btn) end)
+end
+
+local function CreateSectionLabel(parent, name, y)
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.95, 0, 0, 20)
+    lbl.Position = UDim2.new(0.025, 0, 0, y)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = name
+    lbl.TextColor3 = Color3.fromRGB(0, 218, 255)
+    lbl.TextSize = 12
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = parent
+end
+
+-- ===== MENU CHÍNH =====
+local MainMenu = Instance.new("Frame")
+MainMenu.Size = UDim2.new(0, 480, 0, 400)
+MainMenu.Position = UDim2.new(0, 20, 0, 60)
+MainMenu.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+MainMenu.BorderSizePixel = 0
+MainMenu.Active = true
+MainMenu.Draggable = true
+MainMenu.Parent = ScreenGui
+Instance.new("UICorner", MainMenu).CornerRadius = UDim.new(0, 10)
 
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 45)
+Title.Size = UDim2.new(1, 0, 0, 40)
 Title.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
 Title.BorderSizePixel = 0
 Title.Text = "VHT HUB PVP"
 Title.TextColor3 = Color3.fromRGB(0, 218, 255)
 Title.TextSize = 17
 Title.Font = Enum.Font.GothamBold
-Title.Parent = Main
+Title.Parent = MainMenu
 Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 10)
 
-local function SectionLabel(text, y)
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(0.9, 0, 0, 22)
-    lbl.Position = UDim2.new(0.05, 0, 0, y)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = text
-    lbl.TextColor3 = Color3.fromRGB(0, 218, 255)
-    lbl.TextSize = 12
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = Main
-end
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 130, 1, -70)
+Sidebar.Position = UDim2.new(0, 0, 0, 45)
+Sidebar.BackgroundTransparency = 1
+Sidebar.Parent = MainMenu
 
-SectionLabel("SILENT AIM GUN", 52)
-CreateToggle(Main, "Silent Gun", 76, function(v) Config.SilentGun = v end)
-CreateToggle(Main, "Gun Team Check", 112, function(v) Config.SilentGunTeamCheck = v end)
-CreateSlider(Main, "Gun FOV", 148, 50, 500, 200, function(v) Config.SilentGunFOV = v end)
+local TabHolder = Instance.new("Frame")
+TabHolder.Size = UDim2.new(1, -140, 1, -70)
+TabHolder.Position = UDim2.new(0, 135, 0, 45)
+TabHolder.BackgroundTransparency = 1
+TabHolder.Parent = MainMenu
 
-local GunTargetBtn = Instance.new("TextButton")
-GunTargetBtn.Size = UDim2.new(0.9, 0, 0, 32)
-GunTargetBtn.Position = UDim2.new(0.05, 0, 0, 190)
-GunTargetBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
-GunTargetBtn.BorderSizePixel = 0
-GunTargetBtn.Text = "Gun Target: FOV"
-GunTargetBtn.TextColor3 = Color3.fromRGB(210, 210, 210)
-GunTargetBtn.TextSize = 12
-GunTargetBtn.Font = Enum.Font.Gotham
-GunTargetBtn.Parent = Main
-Instance.new("UICorner", GunTargetBtn).CornerRadius = UDim.new(0, 6)
-local GunModes = {"FOV", "Nearest", "LowestHP"}
-GunTargetBtn.MouseButton1Click:Connect(function()
-    local idx = 1
-    for i, m in ipairs(GunModes) do if m == Config.SilentGunTarget then idx = i break end end
-    idx = idx % #GunModes + 1
-    Config.SilentGunTarget = GunModes[idx]
-    GunTargetBtn.Text = "Gun Target: " .. GunModes[idx]
-end)
-
-SectionLabel("CAMERA AIM SKILL", 232)
-CreateToggle(Main, "Skill Aim", 256, function(v) Config.SkillAim = v end)
-CreateToggle(Main, "Skill Team Check", 292, function(v) Config.SkillAimTeamCheck = v end)
-CreateSlider(Main, "Skill FOV", 328, 50, 500, 200, function(v) Config.SkillAimFOV = v end)
-CreateSlider(Main, "Skill Smooth", 372, 1, 100, 15, function(v) Config.SkillAimSmooth = v / 100 end)
-
-local SkillTargetBtn = Instance.new("TextButton")
-SkillTargetBtn.Size = UDim2.new(0.9, 0, 0, 32)
-SkillTargetBtn.Position = UDim2.new(0.05, 0, 0, 414)
-SkillTargetBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
-SkillTargetBtn.BorderSizePixel = 0
-SkillTargetBtn.Text = "Skill Target: FOV"
-SkillTargetBtn.TextColor3 = Color3.fromRGB(210, 210, 210)
-SkillTargetBtn.TextSize = 12
-SkillTargetBtn.Font = Enum.Font.Gotham
-SkillTargetBtn.Parent = Main
-Instance.new("UICorner", SkillTargetBtn).CornerRadius = UDim.new(0, 6)
-local SkillModes = {"FOV", "Nearest", "LowestHP"}
-SkillTargetBtn.MouseButton1Click:Connect(function()
-    local idx = 1
-    for i, m in ipairs(SkillModes) do if m == Config.SkillAimTarget then idx = i break end end
-    idx = idx % #SkillModes + 1
-    Config.SkillAimTarget = SkillModes[idx]
-    SkillTargetBtn.Text = "Skill Target: " .. SkillModes[idx]
-end)
-
-SectionLabel("ESP", 456)
-CreateToggle(Main, "ESP Player", 480, function(v) Config.ESPEnabled = v end)
-CreateToggle(Main, "ESP Box", 516, function(v) Config.ESPBox = v end)
-CreateToggle(Main, "ESP Info", 552, function(v) Config.ESPInfo = v end)
-
--- Footer
 local Footer = Instance.new("TextLabel")
-Footer.Size = UDim2.new(1, 0, 0, 30)
-Footer.Position = UDim2.new(0, 0, 1, -30)
+Footer.Size = UDim2.new(1, 0, 0, 25)
+Footer.Position = UDim2.new(0, 0, 1, -25)
 Footer.BackgroundTransparency = 1
 Footer.Text = "Hoàng Trọng DEV"
 Footer.TextColor3 = Color3.fromRGB(0, 218, 255)
-Footer.TextSize = 14
+Footer.TextSize = 13
 Footer.Font = Enum.Font.GothamBold
-Footer.Parent = Main
+Footer.Parent = MainMenu
 
--- Trang 2
-local Main2 = Instance.new("Frame")
-Main2.Size = UDim2.new(0, 340, 0, 400)
-Main2.Position = UDim2.new(0, 380, 0, 60)
-Main2.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-Main2.BorderSizePixel = 0
-Main2.Active = true
-Main2.Draggable = true
-Main2.Parent = ScreenGui
-Instance.new("UICorner", Main2).CornerRadius = UDim.new(0, 10)
+local tabs = {}
+local tabButtons = {}
 
-local Title2 = Instance.new("TextLabel")
-Title2.Size = UDim2.new(1, 0, 0, 45)
-Title2.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-Title2.BorderSizePixel = 0
-Title2.Text = "VHT HUB PVP - 2"
-Title2.TextColor3 = Color3.fromRGB(0, 218, 255)
-Title2.TextSize = 17
-Title2.Font = Enum.Font.GothamBold
-Title2.Parent = Main2
-Instance.new("UICorner", Title2).CornerRadius = UDim.new(0, 10)
+local function RegisterTab(name)
+    local page = Instance.new("ScrollingFrame")
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.BackgroundTransparency = 1
+    page.BorderSizePixel = 0
+    page.ScrollBarThickness = 4
+    page.ScrollBarImageColor3 = Color3.fromRGB(0, 218, 255)
+    page.CanvasSize = UDim2.new(0, 0, 0, 400)
+    page.Visible = false
+    page.Parent = TabHolder
+    tabs[name] = page
 
-local function SectionLabel2(text, y)
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(0.9, 0, 0, 22)
-    lbl.Position = UDim2.new(0.05, 0, 0, y)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = text
-    lbl.TextColor3 = Color3.fromRGB(0, 218, 255)
-    lbl.TextSize = 12
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = Main2
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -10, 0, 30)
+    btn.Position = UDim2.new(0, 5, 0, #tabButtons * 35)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+    btn.BorderSizePixel = 0
+    btn.Text = name
+    btn.TextColor3 = Color3.fromRGB(210, 210, 210)
+    btn.TextSize = 12
+    btn.Font = Enum.Font.GothamBold
+    btn.Parent = Sidebar
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    table.insert(tabButtons, btn)
+
+    btn.MouseButton1Click:Connect(function()
+        for n, p in pairs(tabs) do p.Visible = (n == name) end
+        for _, b in ipairs(tabButtons) do
+            b.BackgroundColor3 = (b == btn) and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(35, 35, 50)
+        end
+    end)
+    return page
 end
 
-SectionLabel2("ESP HEALTH + TEAM", 52)
-CreateToggle(Main2, "ESP Health", 76, function(v) Config.ESPHealth = v end)
-CreateToggle(Main2, "ESP Team Check", 112, function(v) Config.ESPTeamCheck = v end)
-CreateSlider(Main2, "ESP Max Distance", 148, 100, 5000, 1500, function(v) Config.ESPMaxDistance = v end)
+-- ===== TAB MAIN =====
+local MainTab = RegisterTab("MAIN")
+local y = 5
+CreateSectionLabel(MainTab, "SILENT AIM GUN", y); y = y + 22
+CreateToggle(MainTab, "Silent Gun", y, function(v) Config.SilentGun = v end); y = y + 34
+CreateToggle(MainTab, "Gun Team Check", y, function(v) Config.SilentGunTeamCheck = v end); y = y + 34
+CreateSlider(MainTab, "Gun FOV", y, 50, 500, 200, function(v) Config.SilentGunFOV = v end); y = y + 44
+CreateButton(MainTab, "Gun Target: FOV", y, function(btn)
+    local modes = {"FOV", "Nearest", "LowestHP"}
+    local idx = 1
+    for i, m in ipairs(modes) do if m == Config.SilentGunTarget then idx = i break end end
+    idx = idx % #modes + 1
+    Config.SilentGunTarget = modes[idx]
+    btn.Text = "Gun Target: " .. modes[idx]
+end); y = y + 34
 
-SectionLabel2("HITBOX EXPANDER", 190)
-CreateToggle(Main2, "Hitbox Expander", 214, function(v) Config.HitboxEnabled = v end)
-CreateToggle(Main2, "Hitbox Team Check", 250, function(v) Config.HitboxTeamCheck = v end)
-CreateInput(Main2, "Hitbox Size", 286, 15, function(v) Config.HitboxSize = v end)
+CreateSectionLabel(MainTab, "CAMERA AIM SKILL", y); y = y + 22
+CreateToggle(MainTab, "Skill Aim", y, function(v) Config.SkillAim = v end); y = y + 34
+CreateToggle(MainTab, "Skill Team Check", y, function(v) Config.SkillAimTeamCheck = v end); y = y + 34
+CreateSlider(MainTab, "Skill FOV", y, 50, 500, 200, function(v) Config.SkillAimFOV = v end); y = y + 44
+CreateSlider(MainTab, "Skill Smooth", y, 1, 100, 15, function(v) Config.SkillAimSmooth = v / 100 end); y = y + 44
+CreateButton(MainTab, "Skill Target: FOV", y, function(btn)
+    local modes = {"FOV", "Nearest", "LowestHP"}
+    local idx = 1
+    for i, m in ipairs(modes) do if m == Config.SkillAimTarget then idx = i break end end
+    idx = idx % #modes + 1
+    Config.SkillAimTarget = modes[idx]
+    btn.Text = "Skill Target: " .. modes[idx]
+end); y = y + 34
+MainTab.CanvasSize = UDim2.new(0, 0, 0, y + 10)
 
-SectionLabel2("EXTRA", 328)
-CreateToggle(Main2, "Show FOV Circle", 352, function(v) Config.ShowFOV = v end)
+-- ===== TAB ESP =====
+local ESPTab = RegisterTab("ESP")
+y = 5
+CreateSectionLabel(ESPTab, "ESP PLAYER", y); y = y + 22
+CreateToggle(ESPTab, "ESP Player", y, function(v) Config.ESPEnabled = v end); y = y + 34
+CreateToggle(ESPTab, "ESP Box", y, function(v) Config.ESPBox = v end); y = y + 34
+CreateToggle(ESPTab, "ESP Info", y, function(v) Config.ESPInfo = v end); y = y + 34
+CreateToggle(ESPTab, "ESP Health", y, function(v) Config.ESPHealth = v end); y = y + 34
+CreateToggle(ESPTab, "ESP Team Check", y, function(v) Config.ESPTeamCheck = v end); y = y + 34
+CreateSlider(ESPTab, "ESP Max Distance", y, 100, 5000, 1500, function(v) Config.ESPMaxDistance = v end); y = y + 44
+ESPTab.CanvasSize = UDim2.new(0, 0, 0, y + 10)
+
+-- ===== TAB HITBOX =====
+local HitboxTab = RegisterTab("HITBOX")
+y = 5
+CreateSectionLabel(HitboxTab, "HITBOX EXPANDER", y); y = y + 22
+CreateToggle(HitboxTab, "Hitbox Expander", y, function(v) Config.HitboxEnabled = v end); y = y + 34
+CreateToggle(HitboxTab, "Hitbox Team Check", y, function(v) Config.HitboxTeamCheck = v end); y = y + 34
+CreateInput(HitboxTab, "Hitbox Size", y, 15, function(v) Config.HitboxSize = v end); y = y + 40
+HitboxTab.CanvasSize = UDim2.new(0, 0, 0, y + 10)
+
+-- ===== TAB EXTRA =====
+local ExtraTab = RegisterTab("EXTRA")
+y = 5
+CreateSectionLabel(ExtraTab, "EXTRA", y); y = y + 22
+CreateToggle(ExtraTab, "Show FOV Circle", y, function(v) Config.ShowFOV = v end); y = y + 34
+ExtraTab.CanvasSize = UDim2.new(0, 0, 0, y + 10)
+
+-- Mở tab MAIN mặc định
+tabs["MAIN"].Visible = true
+tabButtons[1].BackgroundColor3 = Color3.fromRGB(0, 160, 100)
 -- ========== 5. HÀM TIỆN ÍCH ==========
 local function GetRoot()
     local char = LP.Character
@@ -495,6 +510,7 @@ local function CreateESPForPlayer(player)
         end
     end
 end
+
 local function RemoveESPForPlayer(player)
     if ESPCache[player] then
         for _, v in pairs(ESPCache[player]) do
