@@ -63,7 +63,6 @@ local Config = {
 
     ShowFOV = false,
 }
-
 -- ========== 4. GUI ==========
 local function CreateToggle(parent, name, y, callback)
     local Btn = Instance.new("TextButton")
@@ -209,7 +208,9 @@ local function SectionLabel(text, y)
     lbl.Font = Enum.Font.GothamBold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.Parent = Main
-endSectionLabel("SILENT AIM GUN", 52)
+end
+
+SectionLabel("SILENT AIM GUN", 52)
 CreateToggle(Main, "Silent Gun", 76, function(v) Config.SilentGun = v end)
 CreateToggle(Main, "Gun Team Check", 112, function(v) Config.SilentGunTeamCheck = v end)
 CreateSlider(Main, "Gun FOV", 148, 50, 500, 200, function(v) Config.SilentGunFOV = v end)
@@ -322,7 +323,8 @@ CreateToggle(Main2, "Hitbox Team Check", 250, function(v) Config.HitboxTeamCheck
 CreateInput(Main2, "Hitbox Size", 286, 15, function(v) Config.HitboxSize = v end)
 
 SectionLabel2("EXTRA", 328)
-CreateToggle(Main2, "Show FOV Circle", 352, function(v) Config.ShowFOV = v end)-- ========== 5. HÀM TIỆN ÍCH ==========
+CreateToggle(Main2, "Show FOV Circle", 352, function(v) Config.ShowFOV = v end)
+-- ========== 5. HÀM TIỆN ÍCH ==========
 local function GetRoot()
     local char = LP.Character
     return char and char:FindFirstChild("HumanoidRootPart")
@@ -492,7 +494,8 @@ local function CreateESPForPlayer(player)
             hpText.Parent = billboard
         end
     end
-endlocal function RemoveESPForPlayer(player)
+end
+local function RemoveESPForPlayer(player)
     if ESPCache[player] then
         for _, v in pairs(ESPCache[player]) do
             if v and v.Parent then v:Destroy() end
