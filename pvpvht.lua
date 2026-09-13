@@ -176,7 +176,7 @@ end
 
 -- GUI chính
 local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 340, 0, 540)
+Main.Size = UDim2.new(0, 340, 0, 620)
 Main.Position = UDim2.new(0, 20, 0, 60)
 Main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 Main.BorderSizePixel = 0
@@ -213,8 +213,27 @@ SectionLabel("SILENT AIM GUN", 52)
 CreateToggle(Main, "Silent Gun", 76, function(v) Config.SilentGun = v end)
 CreateToggle(Main, "Gun Team Check", 112, function(v) Config.SilentGunTeamCheck = v end)
 CreateSlider(Main, "Gun FOV", 148, 50, 500, 200, function(v) Config.SilentGunFOV = v end)
+local GunTargetBtn = Instance.new("TextButton")
+GunTargetBtn.Size = UDim2.new(0.9, 0, 0, 32)
+GunTargetBtn.Position = UDim2.new(0.05, 0, 0, 190)
+GunTargetBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+GunTargetBtn.BorderSizePixel = 0
+GunTargetBtn.Text = "Gun Target: FOV"
+GunTargetBtn.TextColor3 = Color3.fromRGB(210, 210, 210)
+GunTargetBtn.TextSize = 12
+GunTargetBtn.Font = Enum.Font.Gotham
+GunTargetBtn.Parent = Main
+Instance.new("UICorner", GunTargetBtn).CornerRadius = UDim.new(0, 6)
+local GunModes = {"FOV", "Nearest", "LowestHP"}
+GunTargetBtn.MouseButton1Click:Connect(function()
+    local idx = 1
+    for i, m in ipairs(GunModes) do if m == Config.SilentGunTarget then idx = i break end end
+    idx = idx % #GunModes + 1
+    Config.SilentGunTarget = GunModes[idx]
+    GunTargetBtn.Text = "Gun Target: " .. GunModes[idx]
+end)
 
-SectionLabel("CAMERA AIM SKILL", 190)
+SectionLabel("CAMERA AIM SKILL", 232)
 CreateToggle(Main, "Skill Aim", 214, function(v) Config.SkillAim = v end)
 CreateToggle(Main, "Skill Team Check", 250, function(v) Config.SkillAimTeamCheck = v end)
 CreateSlider(Main, "Skill FOV", 286, 50, 500, 200, function(v) Config.SkillAimFOV = v end)
