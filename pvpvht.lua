@@ -42,12 +42,12 @@ local Config = {
     SilentGun = false,
     SilentGunFOV = 200,
     SilentGunTeamCheck = true,
-    
+    SilentGunTarget = "FOV",
     SkillAim = false,
     SkillAimFOV = 200,
     SkillAimSmooth = 0.15,
     SkillAimTeamCheck = true,
-    
+    SkillAimTarget = "FOV",
     ESPEnabled = false,
     ESPBox = true,
     ESPInfo = true,
