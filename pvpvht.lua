@@ -43,22 +43,24 @@ local Config = {
     SilentGunFOV = 200,
     SilentGunTeamCheck = true,
     SilentGunTarget = "FOV",
+
     SkillAim = false,
     SkillAimFOV = 200,
     SkillAimSmooth = 0.15,
     SkillAimTeamCheck = true,
     SkillAimTarget = "FOV",
+
     ESPEnabled = false,
     ESPBox = true,
     ESPInfo = true,
     ESPHealth = true,
     ESPTeamCheck = true,
     ESPMaxDistance = 1500,
-    
+
     HitboxEnabled = false,
     HitboxSize = 15,
     HitboxTeamCheck = true,
-    
+
     ShowFOV = false,
 }
 
@@ -75,7 +77,7 @@ local function CreateToggle(parent, name, y, callback)
     Btn.Font = Enum.Font.Gotham
     Btn.Parent = parent
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
-    
+
     local state = false
     Btn.MouseButton1Click:Connect(function()
         state = not state
@@ -93,7 +95,7 @@ local function CreateSlider(parent, name, y, min, max, default, callback)
     Frame.BorderSizePixel = 0
     Frame.Parent = parent
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
-    
+
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(1, 0, 0, 20)
     Label.BackgroundTransparency = 1
@@ -102,7 +104,7 @@ local function CreateSlider(parent, name, y, min, max, default, callback)
     Label.TextSize = 11
     Label.Font = Enum.Font.Gotham
     Label.Parent = Frame
-    
+
     local Bar = Instance.new("Frame")
     Bar.Size = UDim2.new(0.9, 0, 0, 5)
     Bar.Position = UDim2.new(0.05, 0, 0, 26)
@@ -110,14 +112,14 @@ local function CreateSlider(parent, name, y, min, max, default, callback)
     Bar.BorderSizePixel = 0
     Bar.Parent = Frame
     Instance.new("UICorner", Bar).CornerRadius = UDim.new(0, 3)
-    
+
     local Fill = Instance.new("Frame")
     Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
     Fill.BackgroundColor3 = Color3.fromRGB(0, 160, 100)
     Fill.BorderSizePixel = 0
     Fill.Parent = Bar
     Instance.new("UICorner", Fill).CornerRadius = UDim.new(0, 3)
-    
+
     local dragging = false
     Bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true end
@@ -144,7 +146,7 @@ local function CreateInput(parent, name, y, default, callback)
     Frame.BorderSizePixel = 0
     Frame.Parent = parent
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
-    
+
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(0.45, 0, 1, 0)
     Label.Position = UDim2.new(0.05, 0, 0, 0)
@@ -155,7 +157,7 @@ local function CreateInput(parent, name, y, default, callback)
     Label.Font = Enum.Font.Gotham
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.Parent = Frame
-    
+
     local Box = Instance.new("TextBox")
     Box.Size = UDim2.new(0.45, 0, 0, 26)
     Box.Position = UDim2.new(0.5, 0, 0, 6)
@@ -167,7 +169,7 @@ local function CreateInput(parent, name, y, default, callback)
     Box.Font = Enum.Font.Gotham
     Box.Parent = Frame
     Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 4)
-    
+
     Box.FocusLost:Connect(function()
         local num = tonumber(Box.Text)
         if num then callback(num) else Box.Text = tostring(default) end
@@ -207,12 +209,11 @@ local function SectionLabel(text, y)
     lbl.Font = Enum.Font.GothamBold
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.Parent = Main
-end
-
-SectionLabel("SILENT AIM GUN", 52)
+endSectionLabel("SILENT AIM GUN", 52)
 CreateToggle(Main, "Silent Gun", 76, function(v) Config.SilentGun = v end)
 CreateToggle(Main, "Gun Team Check", 112, function(v) Config.SilentGunTeamCheck = v end)
 CreateSlider(Main, "Gun FOV", 148, 50, 500, 200, function(v) Config.SilentGunFOV = v end)
+
 local GunTargetBtn = Instance.new("TextButton")
 GunTargetBtn.Size = UDim2.new(0.9, 0, 0, 32)
 GunTargetBtn.Position = UDim2.new(0.05, 0, 0, 190)
@@ -234,15 +235,35 @@ GunTargetBtn.MouseButton1Click:Connect(function()
 end)
 
 SectionLabel("CAMERA AIM SKILL", 232)
-CreateToggle(Main, "Skill Aim", 214, function(v) Config.SkillAim = v end)
-CreateToggle(Main, "Skill Team Check", 250, function(v) Config.SkillAimTeamCheck = v end)
-CreateSlider(Main, "Skill FOV", 286, 50, 500, 200, function(v) Config.SkillAimFOV = v end)
-CreateSlider(Main, "Skill Smooth", 330, 1, 100, 15, function(v) Config.SkillAimSmooth = v / 100 end)
+CreateToggle(Main, "Skill Aim", 256, function(v) Config.SkillAim = v end)
+CreateToggle(Main, "Skill Team Check", 292, function(v) Config.SkillAimTeamCheck = v end)
+CreateSlider(Main, "Skill FOV", 328, 50, 500, 200, function(v) Config.SkillAimFOV = v end)
+CreateSlider(Main, "Skill Smooth", 372, 1, 100, 15, function(v) Config.SkillAimSmooth = v / 100 end)
 
-SectionLabel("ESP", 374)
-CreateToggle(Main, "ESP Player", 398, function(v) Config.ESPEnabled = v end)
-CreateToggle(Main, "ESP Box", 434, function(v) Config.ESPBox = v end)
-CreateToggle(Main, "ESP Info", 470, function(v) Config.ESPInfo = v end)
+local SkillTargetBtn = Instance.new("TextButton")
+SkillTargetBtn.Size = UDim2.new(0.9, 0, 0, 32)
+SkillTargetBtn.Position = UDim2.new(0.05, 0, 0, 414)
+SkillTargetBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+SkillTargetBtn.BorderSizePixel = 0
+SkillTargetBtn.Text = "Skill Target: FOV"
+SkillTargetBtn.TextColor3 = Color3.fromRGB(210, 210, 210)
+SkillTargetBtn.TextSize = 12
+SkillTargetBtn.Font = Enum.Font.Gotham
+SkillTargetBtn.Parent = Main
+Instance.new("UICorner", SkillTargetBtn).CornerRadius = UDim.new(0, 6)
+local SkillModes = {"FOV", "Nearest", "LowestHP"}
+SkillTargetBtn.MouseButton1Click:Connect(function()
+    local idx = 1
+    for i, m in ipairs(SkillModes) do if m == Config.SkillAimTarget then idx = i break end end
+    idx = idx % #SkillModes + 1
+    Config.SkillAimTarget = SkillModes[idx]
+    SkillTargetBtn.Text = "Skill Target: " .. SkillModes[idx]
+end)
+
+SectionLabel("ESP", 456)
+CreateToggle(Main, "ESP Player", 480, function(v) Config.ESPEnabled = v end)
+CreateToggle(Main, "ESP Box", 516, function(v) Config.ESPBox = v end)
+CreateToggle(Main, "ESP Info", 552, function(v) Config.ESPInfo = v end)
 
 -- Footer
 local Footer = Instance.new("TextLabel")
@@ -301,9 +322,7 @@ CreateToggle(Main2, "Hitbox Team Check", 250, function(v) Config.HitboxTeamCheck
 CreateInput(Main2, "Hitbox Size", 286, 15, function(v) Config.HitboxSize = v end)
 
 SectionLabel2("EXTRA", 328)
-CreateToggle(Main2, "Show FOV Circle", 352, function(v) Config.ShowFOV = v end)
-
--- ========== 5. HÀM TIỆN ÍCH ==========
+CreateToggle(Main2, "Show FOV Circle", 352, function(v) Config.ShowFOV = v end)-- ========== 5. HÀM TIỆN ÍCH ==========
 local function GetRoot()
     local char = LP.Character
     return char and char:FindFirstChild("HumanoidRootPart")
@@ -316,24 +335,32 @@ local function IsAlive(model)
 end
 
 -- ========== 6. TÌM MỤC TIÊU ==========
-local function FindTarget(fov, teamCheck)
+local function FindTarget(fov, teamCheck, mode)
     local root = GetRoot()
     if not root then return nil end
-    
+    mode = mode or "FOV"
     local center = Camera.ViewportSize / 2
-    local best, bestDist = nil, math.huge
-    
+    local best, bestScore = nil, math.huge
+
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LP and p.Character and IsAlive(p.Character) then
             if teamCheck and p.Team == LP.Team then continue end
             local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-                if onScreen then
-                    local dist = (Vector2.new(screenPos.X, screenPos.Y) - center).Magnitude
-                    if dist < fov and dist < bestDist then
-                        best, bestDist = hrp, dist
-                    end
+            local hum = p.Character:FindFirstChildOfClass("Humanoid")
+            if hrp and hum then
+                local score
+                if mode == "Nearest" then
+                    score = (root.Position - hrp.Position).Magnitude
+                elseif mode == "LowestHP" then
+                    score = hum.Health
+                else
+                    local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
+                    if not onScreen then continue end
+                    score = (Vector2.new(screenPos.X, screenPos.Y) - center).Magnitude
+                    if score > fov then continue end
+                end
+                if score < bestScore then
+                    best, bestScore = hrp, score
                 end
             end
         end
@@ -345,7 +372,7 @@ end
 local oldIndex
 oldIndex = hookmetamethod(game, "__index", function(self, key)
     if Config.SilentGun and self == Mouse and (key == "Hit" or key == "Target") then
-        local target = FindTarget(Config.SilentGunFOV, Config.SilentGunTeamCheck)
+        local target = FindTarget(Config.SilentGunFOV, Config.SilentGunTeamCheck, Config.SilentGunTarget)
         if target then
             return CFrame.new(target.Position)
         end
@@ -356,7 +383,7 @@ end)
 -- ========== 8. CAMERA AIM SKILL ==========
 RunService.RenderStepped:Connect(function()
     if Config.SkillAim then
-        local target = FindTarget(Config.SkillAimFOV, Config.SkillAimTeamCheck)
+        local target = FindTarget(Config.SkillAimFOV, Config.SkillAimTeamCheck, Config.SkillAimTarget)
         if target then
             local newCFrame = CFrame.new(Camera.CFrame.Position, target.Position)
             Camera.CFrame = Camera.CFrame:Lerp(newCFrame, Config.SkillAimSmooth)
@@ -373,19 +400,19 @@ local function CreateESPForPlayer(player)
     local hrp = char:FindFirstChild("HumanoidRootPart")
     local hum = char:FindFirstChildOfClass("Humanoid")
     if not hrp or not hum then return end
-    
+
     if ESPCache[player] then
         for _, v in pairs(ESPCache[player]) do
             if v and v.Parent then v:Destroy() end
         end
     end
     ESPCache[player] = {}
-    
+
     local color = Color3.fromRGB(255, 50, 50)
     if player.Team == LP.Team then
         color = Color3.fromRGB(50, 255, 50)
     end
-    
+
     if Config.ESPBox then
         local box = Instance.new("BoxHandleAdornment")
         box.Name = "ESPBox"
@@ -398,7 +425,7 @@ local function CreateESPForPlayer(player)
         box.Parent = ESPFolder
         table.insert(ESPCache[player], box)
     end
-    
+
     if Config.ESPInfo or Config.ESPHealth then
         local billboard = Instance.new("BillboardGui")
         billboard.Name = "ESPInfo"
@@ -408,7 +435,7 @@ local function CreateESPForPlayer(player)
         billboard.AlwaysOnTop = true
         billboard.Parent = ESPFolder
         table.insert(ESPCache[player], billboard)
-        
+
         if Config.ESPInfo then
             local nameLabel = Instance.new("TextLabel")
             nameLabel.Name = "NameLabel"
@@ -420,7 +447,7 @@ local function CreateESPForPlayer(player)
             nameLabel.TextSize = 13
             nameLabel.Font = Enum.Font.GothamBold
             nameLabel.Parent = billboard
-            
+
             local distLabel = Instance.new("TextLabel")
             distLabel.Name = "DistLabel"
             distLabel.Size = UDim2.new(1, 0, 0, 16)
@@ -433,7 +460,7 @@ local function CreateESPForPlayer(player)
             distLabel.Font = Enum.Font.Gotham
             distLabel.Parent = billboard
         end
-        
+
         if Config.ESPHealth then
             local hpBg = Instance.new("Frame")
             hpBg.Name = "HPBg"
@@ -443,7 +470,7 @@ local function CreateESPForPlayer(player)
             hpBg.BorderSizePixel = 0
             hpBg.Parent = billboard
             Instance.new("UICorner", hpBg).CornerRadius = UDim.new(0, 3)
-            
+
             local hpFill = Instance.new("Frame")
             hpFill.Name = "HPFill"
             hpFill.Size = UDim2.new(1, 0, 1, 0)
@@ -451,7 +478,7 @@ local function CreateESPForPlayer(player)
             hpFill.BorderSizePixel = 0
             hpFill.Parent = hpBg
             Instance.new("UICorner", hpFill).CornerRadius = UDim.new(0, 3)
-            
+
             local hpText = Instance.new("TextLabel")
             hpText.Name = "HPText"
             hpText.Size = UDim2.new(1, 0, 0, 14)
@@ -465,9 +492,7 @@ local function CreateESPForPlayer(player)
             hpText.Parent = billboard
         end
     end
-end
-
-local function RemoveESPForPlayer(player)
+endlocal function RemoveESPForPlayer(player)
     if ESPCache[player] then
         for _, v in pairs(ESPCache[player]) do
             if v and v.Parent then v:Destroy() end
@@ -480,34 +505,34 @@ RunService.RenderStepped:Connect(function()
     if not Config.ESPEnabled then return end
     local root = GetRoot()
     if not root then return end
-    
+
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LP and p.Character and IsAlive(p.Character) then
             if Config.ESPTeamCheck and p.Team == LP.Team then
                 RemoveESPForPlayer(p)
                 continue
             end
-            
+
             local hrp = p.Character:FindFirstChild("HumanoidRootPart")
             local hum = p.Character:FindFirstChildOfClass("Humanoid")
             if not hrp or not hum then continue end
-            
+
             local dist = (root.Position - hrp.Position).Magnitude
             if dist > Config.ESPMaxDistance then
                 RemoveESPForPlayer(p)
                 continue
             end
-            
+
             if not ESPCache[p] then
                 CreateESPForPlayer(p)
             end
-            
+
             if ESPCache[p] then
                 local billboard = ESPCache[p][2]
                 if billboard and billboard.Parent then
                     local distLabel = billboard:FindFirstChild("DistLabel")
                     if distLabel then distLabel.Text = math.floor(dist) .. "m" end
-                    
+
                     local hpBg = billboard:FindFirstChild("HPBg")
                     if hpBg then
                         local hpFill = hpBg:FindFirstChild("HPFill")
