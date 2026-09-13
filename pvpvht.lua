@@ -664,3 +664,28 @@ StarterGui:SetCore("SendNotification", {
 })
 
 print("[VHT HUB PVP by Hoàng Trọng DEV] Loaded!")
+-- ========== 13. NÚT NỔI NARUTO BẬT/TẮT MENU ==========
+local ToggleBtn = Instance.new("ImageButton")
+ToggleBtn.Name = "VHT_ToggleButton"
+ToggleBtn.Size = UDim2.new(0, 60, 0, 60)
+ToggleBtn.Position = UDim2.new(0, 15, 0, 200)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 160, 100)
+ToggleBtn.BorderSizePixel = 0
+ToggleBtn.Image = "rbxassetid://7651282997"
+ToggleBtn.ImageTransparency = 0
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = ScreenGui
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(0, 218, 255)
+stroke.Thickness = 2
+stroke.Parent = ToggleBtn
+
+local menuVisible = true
+ToggleBtn.MouseButton1Click:Connect(function()
+    menuVisible = not menuVisible
+    MainMenu.Visible = menuVisible
+    ToggleBtn.BackgroundColor3 = menuVisible and Color3.fromRGB(0, 160, 100) or Color3.fromRGB(80, 30, 30)
+end)
